@@ -38,7 +38,7 @@ func GetQueryResults(client *athena.Client, QueryID *string) ([]types.Row, error
 			log.Printf("Query execution failed: %s\n", err.Error())
 			return nil, errors.New("Query Execution failed")
 		}
-		time.Sleep(time.Second)
+		time.Sleep(2 * time.Second)
 		data, err = client.GetQueryResults(context.TODO(), params)
 	}
 
