@@ -28,7 +28,7 @@ def lambda_handler(event, context):
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HTML Email</title>
-    <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/brownstd">
+    <link rel="stylesheet">
     <style type="text/css">
         .wrapper {
             width: 100%;
@@ -117,7 +117,6 @@ def lambda_handler(event, context):
             <!-- header icon -->
             <tr>
                 <td class="spotify-logo">
-                    <i class="fa fa-spotify" style="font-size: 64px; color: #F2F2F2"></i>
                 </td>
             </tr>
 
@@ -212,10 +211,10 @@ def lambda_handler(event, context):
     email['Subject'] = subject
     part1 = MIMEText(template.render(plays = plays, artists = artists, time = time),'html')
     email.attach(part1)
-    
+
     ssl_context = ssl.create_default_context()
     with smtplib.SMTP_SSL(host='smtp.gmail.com',port=465,context=ssl_context) as smtp:
         smtp.login(email_sender, email_password)
         smtp.sendmail(email_sender, email_reciever, email.as_string())
-        
+
     return {"message":"success"}

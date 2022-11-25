@@ -6,4 +6,5 @@ cd send_emails && zip -r ../send_emails.zip .
 
 aws lambda update-function-code --function-name send_emails --zip-file fileb://../send_emails.zip
 
-rm -rf send_emails send_emails.zip
+rm -r ../send_emails
+rm ../send_emails.zip
