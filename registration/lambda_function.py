@@ -1,6 +1,7 @@
 import boto3
 import requests
 import base64
+import os
 from typing import Optional
 from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
@@ -11,7 +12,7 @@ from client import client_id, client_secret
 app = FastAPI()
 lambda_handler = Mangum(app,lifespan='off')
 
-url = 'https://ohfgek7sxvszcmzefd43xluksy0hkboo.lambda-url.me-south-1.on.aws'
+url = os.environ.get("func_URL")
 
 # Merged into a single call becuase AWS Lambda 
 # URL doesn't work with redirection

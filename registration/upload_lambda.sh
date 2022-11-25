@@ -6,4 +6,4 @@ cd registration && zip -r ../registration.zip .
 
 aws lambda update-function-code --function-name spotify-registration --zip-file fileb://../registration.zip
 
-rm -r registration registration.zip
+rm -r ../registration ../registration.zip
