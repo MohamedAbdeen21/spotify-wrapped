@@ -29,7 +29,7 @@ func GetUsers(svc *dynamodb.Client) (users []string) {
 
 	err = attributevalue.UnmarshalListOfMaps(out.Items, &rows)
 	if err != nil {
-		println("Marshal error found: ", err.Error())
+		log.Fatalf("Marshal error found: %s\n", err.Error())
 	}
 
 	for _, row := range rows {
