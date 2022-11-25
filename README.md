@@ -14,7 +14,7 @@ Each week, a second Lambda function (written in Go) queries the `history` table 
 
 The third Lambda parses the messages from SQS and sends a formatted HTML/CSS email to each user with their listening summaries.
 
-The second lambda was written in Go for concurrent execution of the queries, since the code will hang while waiting for athena to return the results. The Go code can runs the queries (which also runs concurrently) for all users concurrently. This means that the Go code is exponentially faster than the Python code. (3x faster for the current user count).
+The second lambda was written in Go for concurrent execution of the queries, since the code will hang while waiting for athena to return the results. The Go code runs the queries, which also run concurrently, for all users concurrently. This means that the Go code is exponentially faster than the Python code. (3x faster for the current user count).
 
 The tables, functions, and queue are created beforehand through the AWS console.
 
