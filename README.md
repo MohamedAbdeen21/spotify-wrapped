@@ -10,7 +10,11 @@ The user registers using the API to grant the service permission to access some 
 
 Then each hour, a Lambda function triggers and asks the API for the recent plays of each registerd user in the `tokens` table and writes the response to a DynamoDB table called `history`. 
 
-Each week, a second Lambda function queries the `history` table for all recent plays for each user during the previous week, analyzes the plays and writes to a SQS queue which triggers a third Lambda function. The third Lambda parses the messages from SQS and sends a formatted HTML/CSS email to each user with their listening summaries.
+Each week, a second Lambda function (written in Go) queries the `history` table for all recent plays for each user during the previous week, analyzes the plays and writes to a SQS queue which triggers a third Lambda function.
+
+The third Lambda parses the messages from SQS and sends a formatted HTML/CSS email to each user with their listening summaries.
+
+The second lambda was written in Go for concurrent execution of the queries, since the code will hang while waiting for athena to return the results. The Go code can runs the queries (which also runs concurrently) for all users concurrently. This means that the Go code is exponentially faster than the Python code. (3x faster for the current user count).
 
 The tables, functions, and queue are created beforehand through the AWS console.
 
