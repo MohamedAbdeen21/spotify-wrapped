@@ -29,7 +29,7 @@ with Diagram(direction="LR"):
 
             with Cluster("Process, Publish and Archive\n(Weekly Trigger)", graph_attr={"labeljust":"C"}):
                 query = Athena()
-                aggregate = Lambda()
+                aggregate = Lambda("Golang package")
 
             with Cluster("Data Lake", graph_attr={'labeljust':'C'}):
                 archive = S3()
