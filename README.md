@@ -22,7 +22,7 @@ The tables, functions, and queue are created beforehand through the AWS console.
 
 ![](./assets/diagrams_image.png)
 
-## Email reportt
+## Email report
 
 ![](./assets/email.png)
 
