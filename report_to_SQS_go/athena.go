@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"log"
 	"strconv"
-	"strings"
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -25,24 +24,29 @@ type Query struct {
 	Sql  string
 }
 
-func GetQueryResults(client *athena.Client, QueryID *string) ([]types.Row, error) {
+func GetResults(client *athena.Client, QueryID *string) ([]types.Row, error) {
 
-	params := &athena.GetQueryResultsInput{
+	executionParams := &athena.GetQueryExecutionInput{
 		QueryExecutionId: QueryID,
 	}
 
-	data, err := client.GetQueryResults(context.TODO(), params)
+	// poll query state, if success get results and return
+	for {
+		out, _ := client.GetQueryExecution(context.TODO(), executionParams)
+		switch out.QueryExecution.Status.State {
+		case types.QueryExecutionStateQueued, types.QueryExecutionStateRunning:
+			time.Sleep(2 * time.Second)
+		case types.QueryExecutionStateCancelled, types.QueryExecutionStateFailed:
+			return nil, errors.New("Query failed")
+		case types.QueryExecutionStateSucceeded:
+			resultsParams := &athena.GetQueryResultsInput{
+				QueryExecutionId: QueryID,
+			}
 
-	for err != nil {
-		if strings.Contains(err.Error(), "FAILED") {
-			log.Printf("Query execution failed: %s\n", err.Error())
-			return nil, errors.New("Query Execution failed")
+			data, _ := client.GetQueryResults(context.TODO(), resultsParams)
+			return data.ResultSet.Rows, nil
 		}
-		time.Sleep(2 * time.Second)
-		data, err = client.GetQueryResults(context.TODO(), params)
 	}
-
-	return data.ResultSet.Rows, nil
 }
 
 func ExecuteQuery(client *athena.Client, query Query, result chan any) {
@@ -54,6 +58,7 @@ func ExecuteQuery(client *athena.Client, query Query, result chan any) {
 	conf := &types.ResultConfiguration{
 		OutputLocation: aws.String("s3://spotify-wrapped-spill/test/"),
 	}
+
 	params := &athena.StartQueryExecutionInput{
 		QueryString:           aws.String(query.Sql),
 		ResultConfiguration:   conf,
@@ -68,7 +73,7 @@ func ExecuteQuery(client *athena.Client, query Query, result chan any) {
 	}
 
 	queryId := resp.QueryExecutionId
-	query_result, err := GetQueryResults(client, queryId)
+	query_result, err := GetResults(client, queryId)
 
 	if err != nil {
 		log.Fatalln(err.Error())
