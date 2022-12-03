@@ -82,6 +82,8 @@ def getRecents(
                 "duration_seconds": int(track["duration_ms"] / 1000),
                 "album_name": track["album"]["name"],
                 "timestamp": time_stamp,
+                "artists": [artist['name'] for artist in track['artists']],
+                "image": track["album"]["images"][0]["url"]
             }
         )
 
@@ -90,9 +92,9 @@ def getRecents(
 
 def lambda_handler(events, context):
     dynamo = boto3.resource("dynamodb")
-    tokens = dynamo.Table("tokens")
+    tokens = dynamo.Table("tokens_tf")
     items = tokens.scan()["Items"]
-    history = dynamo.Table("listening_history")
+    history = dynamo.Table("listening_history_tf")
     for item in items:
         email = item["email"]
         token = item["token"]

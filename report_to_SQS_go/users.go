@@ -18,7 +18,7 @@ type User struct {
 func GetUsers(svc *dynamodb.Client) (users []string) {
 
 	out, err := svc.Scan(context.TODO(), &dynamodb.ScanInput{
-		TableName: aws.String("tokens"),
+		TableName: aws.String(tokens_table),
 	})
 
 	if err != nil {

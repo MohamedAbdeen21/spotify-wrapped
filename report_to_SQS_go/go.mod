@@ -9,7 +9,6 @@ require (
 	github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue v1.10.4
 	github.com/aws/aws-sdk-go-v2/service/athena v1.19.1
 	github.com/aws/aws-sdk-go-v2/service/dynamodb v1.17.5
-	github.com/aws/aws-sdk-go-v2/service/sqs v1.19.15
 )
 
 require (

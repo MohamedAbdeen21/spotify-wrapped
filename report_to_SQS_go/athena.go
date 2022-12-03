@@ -51,12 +51,12 @@ func GetResults(client *athena.Client, QueryID *string) ([]types.Row, error) {
 
 func ExecuteQuery(client *athena.Client, query Query, result chan any) {
 	cntxt := &types.QueryExecutionContext{
-		Catalog:  aws.String("listening_history"),
+		Catalog:  aws.String(athena_catalog),
 		Database: aws.String("default"),
 	}
 
 	conf := &types.ResultConfiguration{
-		OutputLocation: aws.String("s3://spotify-wrapped-spill/test/"),
+		OutputLocation: aws.String(s3_athena_spill),
 	}
 
 	params := &athena.StartQueryExecutionInput{
@@ -142,25 +142,26 @@ func GetUserData(client *athena.Client, user string) map[string]any {
 	plays_query := Query{
 		Type: plays,
 		Sql: fmt.Sprintf(`SELECT name, COUNT(*), SUM(duration_seconds) AS total_time, image
-			    FROM listening_history %s
+			    FROM %s
+				%s
 			    GROUP BY (name, image)
 			    ORDER BY total_time
-			    DESC LIMIT 5`, filter),
+			    DESC LIMIT 5`, history_table, filter),
 	}
 
 	duration_query := Query{
 		Type: duration,
-		Sql:  fmt.Sprintf("SELECT SUM(duration_seconds) FROM listening_history %s", filter),
+		Sql:  fmt.Sprintf("SELECT SUM(duration_seconds) FROM %s %s", history_table, filter),
 	}
 
 	artists_query := Query{
 		Type: artists,
 		Sql: fmt.Sprintf(`SELECT artist, count(artist), sum(duration_seconds) as total
-			    FROM listening_history, unnest(artists) as t(artist)
+			    FROM %s, unnest(artists) as t(artist)
 			    %s
 			    GROUP BY artist
 			    ORDER BY total
-			    DESC LIMIT 5`, filter),
+			    DESC LIMIT 5`, history_table, filter),
 	}
 
 	result["email"] = user
