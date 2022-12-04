@@ -167,7 +167,7 @@ def lambda_handler(event, context):
                                 <div class="card-text" style="font-weight: bold;">
                                     {{play["name"]}}
                                 </div>
-                                <div class="card-text" style="font-style: italic;">
+                                <div class="card-text" style="max-width:250px; font-style: italic;">
                                     {{play["plays"]}} plays: {{play["duration"]}} minutes
                                 </div>
                             </div>

@@ -52,7 +52,7 @@ func GetResults(client *athena.Client, QueryID *string) ([]types.Row, error) {
 func ExecuteQuery(client *athena.Client, query Query, result chan any) {
 	cntxt := &types.QueryExecutionContext{
 		Catalog:  aws.String(athena_catalog),
-		Database: aws.String("default"),
+		Database: aws.String(athena_database),
 	}
 
 	conf := &types.ResultConfiguration{

@@ -227,7 +227,12 @@ module "triggers" {
 
 // Need to create the DynamoDB-Athena connector from 
 // console for now, use this S3 for output
+// Update "athena_catalog" and "athena_database" constants
+//  in `report_to_SQS_go/config.go` with the name of the
+// connector and the database
 resource "aws_s3_bucket" "query_spill" {
-  bucket = "spotify-wrapped-spill"
+  bucket        = "spotify-wrapped-spill"
   force_destroy = true
 }
+
+// TODO: Registration lambda 
