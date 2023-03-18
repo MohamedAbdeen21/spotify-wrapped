@@ -2,25 +2,6 @@ provider "aws" {
   region = "me-south-1"
 }
 
-# environment variables 
-variable "client_id" {
-  description = "Spotify client id"
-  type        = string
-  sensitive   = true
-}
-
-variable "client_secret" {
-  description = "spotify client secret"
-  type        = string
-  sensitive   = true
-}
-
-variable "email_password" {
-  description = "email password for third-party apps"
-  type        = string
-  sensitive   = true
-}
-
 resource "aws_dynamodb_table" "tokens" {
   name           = "tokens_tf"
   billing_mode   = "PROVISIONED"
@@ -69,7 +50,7 @@ module "lambda_load_listening_history" {
   function_name      = "load_listening_history_tf"
   handler            = "lambda_function.lambda_handler"
   runtime            = "python3.9"
-  source_path        = "./load_listening_history"
+  source_path        = "../load_listening_history"
   attach_policy_json = true
   policy_json = jsonencode(
     {
@@ -103,10 +84,10 @@ module "lambda_load_listening_history" {
   }
 }
 
-data "archive_file" "go_package" {
+data "archive_file" "go_report_package" {
   type        = "zip"
-  source_file = "./report_to_SQS_go/main"
-  output_path = "./report_to_SQS_go/main.zip"
+  source_file = "../report_to_SQS_go/main"
+  output_path = "../report_to_SQS_go/main.zip"
 }
 
 resource "aws_sqs_queue" "emails_queue" {
@@ -115,12 +96,15 @@ resource "aws_sqs_queue" "emails_queue" {
 }
 
 module "lambda_report_to_sqs" {
+  depends_on = [
+    data.archive_file.go_report_package
+  ]
   source                 = "terraform-aws-modules/lambda/aws"
   function_name          = "report_to_SQS_Go_tf"
   handler                = "main"
   runtime                = "go1.x"
   create_package         = false
-  local_existing_package = "./report_to_SQS_go/main.zip"
+  local_existing_package = "../report_to_SQS_go/main.zip"
   attach_policy_json     = true
   policy_json = jsonencode({
     Version = "2012-10-17"
@@ -160,7 +144,7 @@ module "lambda_send_emails" {
   function_name      = "send_emails_tf"
   handler            = "lambda_function.lambda_handler"
   runtime            = "python3.9"
-  source_path        = "./send_emails"
+  source_path        = "../send_emails"
   attach_policy_json = true
   policy_json = jsonencode(
     {
@@ -205,7 +189,7 @@ module "triggers" {
     }
     weekly_trigger = {
       description         = "Trigger report to SQS"
-      schedule_expression = "cron(0 22 ? * FRI *)"
+      schedule_expression = "cron(45 20 ? * FRI *)"
     }
   }
 
@@ -234,5 +218,3 @@ resource "aws_s3_bucket" "query_spill" {
   bucket        = "spotify-wrapped-spill"
   force_destroy = true
 }
-
-// TODO: Registration lambda 

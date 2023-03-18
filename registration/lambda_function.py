@@ -58,7 +58,7 @@ async def main(code: Optional[str] = None):
         email = requests.get(email_base_url, headers=email_headers).json()["email"]
 
         dynamo = boto3.resource("dynamodb")
-        tokens = dynamo.Table("tokens")
+        tokens = dynamo.Table("tokens_tf")
         item = {"email": email, "token": access_token, "refresh_token": refresh_token}
         tokens.put_item(Item=item)
 
