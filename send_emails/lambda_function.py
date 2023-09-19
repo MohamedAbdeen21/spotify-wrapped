@@ -6,17 +6,19 @@ import json
 import os
 import jinja2
 
+
 def lambda_handler(event, context):
-    
-    users = json.loads(json.loads(event['Records'][0]['body'])['responsePayload'])
-    
+
+    users = json.loads(json.loads(event['Records'][0]['body'])[
+                       'responsePayload'])
+
     for msg_body in users:
         email_sender = os.environ.get("email_sender")
         email_password = os.environ.get("email_password")
         email_reciever = msg_body['email']
-        
+
         subject = 'Weekly Spotify Wrap'
-            
+
         plays = msg_body['plays']
         artists = msg_body['artists']
         time = msg_body['minutes_played']
@@ -88,6 +90,9 @@ def lambda_handler(event, context):
             .card-text{
                 font-size: 16px;
                 color: black;
+                max-width:250px;
+                text-align: center;
+                margin: 0 auto;
             }
 
             .artist {
@@ -95,7 +100,6 @@ def lambda_handler(event, context):
                 color:#FFFFFF;
                 font-size: 16px;
                 margin-top: 0 auto;
-                text-align: left;            
                 height:75px;
                 font-style: italic;
             }
@@ -167,7 +171,7 @@ def lambda_handler(event, context):
                                 <div class="card-text" style="font-weight: bold;">
                                     {{play["name"]}}
                                 </div>
-                                <div class="card-text" style="max-width:250px; font-style: italic;">
+                                <div class="card-text" style="font-style: italic;">
                                     {{play["plays"]}} plays: {{play["duration"]}} minutes
                                 </div>
                             </div>
@@ -204,18 +208,18 @@ def lambda_handler(event, context):
     </body>
     </html>
     """)
-        
-        
+
         email = MIMEMultipart()
         email['From'] = email_sender
         email['To'] = email_reciever
         email['Subject'] = subject
-        part1 = MIMEText(template.render(plays = plays, artists = artists, time = time),'html')
+        part1 = MIMEText(template.render(
+            plays=plays, artists=artists, time=time), 'html')
         email.attach(part1)
 
         ssl_context = ssl.create_default_context()
-        with smtplib.SMTP_SSL(host='smtp.gmail.com',port=465,context=ssl_context) as smtp:
+        with smtplib.SMTP_SSL(host='smtp.gmail.com', port=465, context=ssl_context) as smtp:
             smtp.login(email_sender, email_password)
             smtp.sendmail(email_sender, email_reciever, email.as_string())
 
-    return {"message":"success"}
+    return {"message": "success"}

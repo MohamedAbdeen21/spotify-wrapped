@@ -23,8 +23,8 @@ resource "aws_dynamodb_table" "tokens" {
 resource "aws_dynamodb_table" "listening_history" {
   name           = "listening_history_tf"
   billing_mode   = "PROVISIONED"
-  read_capacity  = 1
-  write_capacity = 1
+  read_capacity  = 6
+  write_capacity = 6
   hash_key       = "email"
   range_key      = "timestamp"
 
@@ -189,7 +189,7 @@ module "triggers" {
     }
     weekly_trigger = {
       description         = "Trigger report to SQS"
-      schedule_expression = "cron(45 20 ? * FRI *)"
+      schedule_expression = "cron(0 21 ? * FRI *)"
     }
   }
 

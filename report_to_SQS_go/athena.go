@@ -82,7 +82,7 @@ func ExecuteQuery(client *athena.Client, query Query, result chan any) {
 	}
 
 	switch query.Type {
-	case 0:
+	case plays:
 		var rows []map[string]any
 		for _, value := range query_result[1:] {
 			data := value.Data
@@ -98,7 +98,7 @@ func ExecuteQuery(client *athena.Client, query Query, result chan any) {
 		}
 		result <- rows
 
-	case 1:
+	case artists:
 		var rows []map[string]any
 		for _, value := range query_result[1:] {
 			data := value.Data
@@ -113,7 +113,7 @@ func ExecuteQuery(client *athena.Client, query Query, result chan any) {
 		}
 		result <- rows
 
-	case 2:
+	case duration:
 		for _, value := range query_result[1:] {
 			duration_seconds_f, _ := strconv.ParseFloat(*value.Data[0].VarCharValue, 64)
 			duration_second := int(duration_seconds_f)
