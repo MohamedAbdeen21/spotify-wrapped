@@ -5,9 +5,12 @@ import base64
 import os
 
 
-def refreshTokens(refresh_token: str) -> dict[str:str]:
+def refreshTokens(refresh_token: str) -> dict[str,str]:
     client_id = os.environ.get("client_id")
     client_secret = os.environ.get("client_secret")
+
+    if client_id == None or client_secret == None:
+        return {}
 
     encoded = base64.b64encode(
         (client_id + ":" + client_secret).encode("ascii")
@@ -58,7 +61,6 @@ def getRecents(
 
     items = recents.json()["items"]
 
-    # rows = [["name", "popularity", "duration_ms", "album", "played_at"]]
     rows = []
     for item in items:
         track = item["track"]
@@ -91,7 +93,7 @@ def getRecents(
 
 
 def lambda_handler(events, context):
-    dynamo = boto3.resource("dynamodb")
+    dynamo = boto3.client("dynamodb")
     tokens = dynamo.Table("tokens_tf")
     items = tokens.scan()["Items"]
     history = dynamo.Table("listening_history_tf")
