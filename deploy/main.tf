@@ -50,7 +50,7 @@ module "lambda_load_listening_history" {
   function_name      = "load_listening_history_tf"
   handler            = "lambda_function.lambda_handler"
   runtime            = "python3.9"
-  source_path        = "../load_listening_history"
+  source_path        = "../src/load_listening_history"
   attach_policy_json = true
   policy_json = jsonencode(
     {
@@ -86,8 +86,8 @@ module "lambda_load_listening_history" {
 
 data "archive_file" "go_report_package" {
   type        = "zip"
-  source_file = "../report_to_SQS_go/main"
-  output_path = "../report_to_SQS_go/main.zip"
+  source_file = "../src/report_to_SQS_go/main"
+  output_path = "../src/report_to_SQS_go/main.zip"
 }
 
 resource "aws_sqs_queue" "emails_queue" {
@@ -104,7 +104,7 @@ module "lambda_report_to_sqs" {
   handler                = "main"
   runtime                = "go1.x"
   create_package         = false
-  local_existing_package = "../report_to_SQS_go/main.zip"
+  local_existing_package = "../src/report_to_SQS_go/main.zip"
   attach_policy_json     = true
   policy_json = jsonencode({
     Version = "2012-10-17"
@@ -144,7 +144,7 @@ module "lambda_send_emails" {
   function_name      = "send_emails_tf"
   handler            = "lambda_function.lambda_handler"
   runtime            = "python3.9"
-  source_path        = "../send_emails"
+  source_path        = "../src/send_emails"
   attach_policy_json = true
   policy_json = jsonencode(
     {
