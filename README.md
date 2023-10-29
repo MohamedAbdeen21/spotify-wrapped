@@ -27,7 +27,6 @@ The project comprises the following components:
 6. **Email Sender Lambda (AWS Lambda)**: Python script to consume the SQS queue and sends email summaries to corresponding users.
 
 Almost all components are managed by Terraform, except:
-- registration API (TODO)
 - federated query, which allows athena to query DynamoDB (TODO)
 
 ![](./assets/diagrams_image.png)

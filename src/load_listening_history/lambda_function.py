@@ -93,7 +93,7 @@ def getRecents(
 
 
 def lambda_handler(events, context):
-    dynamo = boto3.client("dynamodb")
+    dynamo = boto3.resource("dynamodb")
     tokens = dynamo.Table("tokens_tf")
     items = tokens.scan()["Items"]
     history = dynamo.Table("listening_history_tf")

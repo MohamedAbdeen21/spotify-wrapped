@@ -7,17 +7,20 @@ from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
 from fastapi import status
 from mangum import Mangum
-from client import client_id, client_secret
 
 app = FastAPI()
 lambda_handler = Mangum(app,lifespan='off')
 
-url = os.environ.get("func_URL")
+client_id = os.environ.get("client_id")
+client_secret = os.environ.get("client_secret")
+url = os.environ.get("own_lambda_url")
 
 # Merged into a single call becuase AWS Lambda 
 # URL doesn't work with redirection
 @app.get("/", status_code=status.HTTP_200_OK)
 async def main(code: Optional[str] = None):
+    if not client_id or not client_secret or not url:
+        return {"message":"Server Error: Missing env variable"}
     if code == None:
         base = "https://accounts.spotify.com/authorize?"
         base += "response_type=code"

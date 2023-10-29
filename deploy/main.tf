@@ -84,6 +84,49 @@ module "lambda_load_listening_history" {
   }
 }
 
+module "registration_api_tf" {
+  source = "terraform-aws-modules/lambda/aws"
+
+  function_name      = "registration_api_tf"
+  handler            = "lambda_function.lambda_handler"
+  runtime            = "python3.9"
+  source_path        = "../src/registration/"
+  attach_policy_json = true
+  policy_json = jsonencode(
+    {
+      Version = "2012-10-17",
+      Statement = [
+        {
+          Effect : "Allow",
+          Action : [
+            "dynamodb:*",
+            "lambda:*",
+            "logs:*",
+            "cloudwatch:*"
+          ],
+          Resource : ["*"]
+        }
+      ]
+    }
+  )
+  timeout                                 = 900
+  create_current_version_allowed_triggers = false
+  create_lambda_function_url              = true
+  memory_size                             = 1024
+  environment_variables = {
+    client_id     = var.client_id
+    client_secret = var.client_secret
+    # trying to figure out a workaround to this
+    # own_lambda_url       = module.registration_api_tf.lambda_function_url
+  }
+}
+
+output "lambda_invoke_url" {
+  value       = module.registration_api_tf.lambda_function_url
+  description = "The URL to register for the service"
+  depends_on  = [module.registration_api_tf]
+}
+
 data "archive_file" "go_report_package" {
   type        = "zip"
   source_file = "../src/report_to_SQS_go/main"

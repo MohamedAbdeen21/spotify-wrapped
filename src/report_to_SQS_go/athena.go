@@ -177,7 +177,7 @@ func GetUserData(client *athena.Client, user string) map[string]any {
 	// blocking instructions; ensure all three queries finish
 	result["plays"] = <-plays_query.Result
 	result["minutes_played"] = (<-duration_query.Result)[0]["duration"]
-	result["artists"] = <-duration_query.Result
+	result["artists"] = <-artists_query.Result
 
 	return result
 }
