@@ -1,3 +1,4 @@
 requests==2.27.1
 fastapi==0.85.0
 mangum==0.16.0
+starlette==0.20.4

@@ -15,4 +15,3 @@ variable "email_password" {
   type        = string
   sensitive   = true
 }
-

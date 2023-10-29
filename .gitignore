@@ -2,11 +2,11 @@
 **.zip
 
 src/report_to_SQS_py/
-src/registration/client.py
 src/registration/backup.py
 src/report_to_SQS_go/main
 
 deploy/builds
-deploy/*.terraform**
-deploy/**.tfstate**
+deploy/*.terraform*
+deploy/*.tfstate*
+deploy/*.state
 secrets.sh

@@ -116,15 +116,7 @@ module "registration_api_tf" {
   environment_variables = {
     client_id     = var.client_id
     client_secret = var.client_secret
-    # trying to figure out a workaround to this
-    # own_lambda_url       = module.registration_api_tf.lambda_function_url
   }
-}
-
-output "lambda_invoke_url" {
-  value       = module.registration_api_tf.lambda_function_url
-  description = "The URL to register for the service"
-  depends_on  = [module.registration_api_tf]
 }
 
 data "archive_file" "go_report_package" {
