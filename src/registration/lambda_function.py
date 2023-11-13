@@ -1,14 +1,16 @@
-import boto3
-from mangum.types import LambdaContext
-import requests
 import base64
 import os
 from typing import Optional, Tuple
+
+import boto3
 from fastapi import FastAPI
-from fastapi.responses import RedirectResponse
 from fastapi import status
+from fastapi.requests import Request
+from fastapi.responses import RedirectResponse
+from fastapi.responses import FileResponse
 from mangum import Mangum
-from starlette.requests import Request
+from mangum.types import LambdaContext
+import requests
 
 app = FastAPI()
 lambda_handler = Mangum(app,lifespan='off')
@@ -30,23 +32,24 @@ def authorizeUser(client_id: str, redirect_url: str):
     return RedirectResponse(base)
 
 def fetchUserTokens(code: str, client_id: str, client_secret:str , url: str) -> Optional[Tuple[str,str]]:
-    encoded = base64.b64encode(
-        (client_id + ":" + client_secret).encode("ascii")
-    ).decode("ascii")
-
-    base = "https://accounts.spotify.com/api/token"
+    base_url = "https://accounts.spotify.com/api/token"
+    
     payload = {
         "grant_type": "authorization_code",
         "code": code,
         "redirect_uri": url,
     }
 
+    encoded = base64.b64encode(
+        (client_id + ":" + client_secret).encode("ascii")
+    ).decode("ascii")
+
     headers = {
         "Content-Type": "application/x-www-form-urlencoded",
         "Authorization": "Basic " + encoded,
     }
 
-    tokens = requests.post(base, data=payload, headers=headers).json()
+    tokens = requests.post(base_url, data=payload, headers=headers).json()
     if 'error' in tokens:
         return None
 
@@ -95,4 +98,4 @@ async def main(request: Request, code: Optional[str] = None):
         item = {"email": email, "token": access_token, "refresh_token": refresh_token}
         tokens.put_item(Item=item)
 
-        return {"message": "success"}
+        return FileResponse('index.html')
