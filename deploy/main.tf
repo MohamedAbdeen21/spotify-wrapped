@@ -119,6 +119,7 @@ module "registration_api_tf" {
   }
 }
 
+// zip is created by `make apply`
 data "archive_file" "go_report_package" {
   type        = "zip"
   source_file = "../src/report_to_SQS_go/main"
@@ -223,8 +224,8 @@ module "triggers" {
       schedule_expression = "cron(58 * * * ? *)"
     }
     weekly_trigger = {
-      description         = "Trigger report to SQS"
-      schedule_expression = "cron(0 21 ? * FRI *)"
+      description         = "Trigger send report"
+      schedule_expression = "cron(0 22 ? * FRI *)"
     }
   }
 

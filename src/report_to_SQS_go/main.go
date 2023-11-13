@@ -23,7 +23,6 @@ func Handle(athena_client *athena.Client, user string, data chan map[string]any)
 }
 
 func LambdaHandler() (string, error) {
-
 	var dataChannels []chan map[string]any
 	var result []any
 

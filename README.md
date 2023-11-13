@@ -35,8 +35,6 @@ Almost all components are managed by Terraform, except:
 
 Please feel free to contribute and open a PR. Some Quality-of-Life TODOs are:
 
-- There are still a few components missing from Terraform, like the federated query and the registartion API.
+- There are still a few components missing from Terraform, like the federated query.
+- Add an unsubscribe endpoint and make a landing page for both subscribing and unsubscribing.
 - The email itself can use some work. I'm not the best UI designer, sorry.
-
-# Disclaimer
-Due to Spotify API's restrictions, this service is not available publicly. Currently, this is only used by me and a few close friends.
