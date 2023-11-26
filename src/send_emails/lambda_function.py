@@ -50,17 +50,21 @@ def lambda_handler(event, context):
                 font-family: sans-serif;
             }
 
-            .spotify-logo {
+            .header {
                 background-color: #000000;
                 text-align: center;
+                height: 200px;
+                padding-top: 30px; 
             }
 
-            .header-text {
-                background-color: #000000;
+            .header .logo {
+                width: 300px;
+            }
+
+            .header p {
                 color: #F2F2F2;
                 text-align: center;
                 font-size: 32px;
-                margin-top: 0 auto;
                 font-weight: bold;
             }
 
@@ -119,17 +123,11 @@ def lambda_handler(event, context):
                     <td height="8" style="background-color: #FFFFFF;"> </td>
                 </tr>
 
-                <!-- header icon -->
+                <!-- header logo and text -->
                 <tr>
-                    <td class="spotify-logo">
-                        <img src="https://storage.googleapis.com/pr-newsroom-wp/1/2018/11/Spotify_Logo_RGB_White.png" alt="Spotify Logo">
-                    </td>
-                </tr>
-
-                <!-- header text -->
-                <tr class="header-text" height="300">
-                    <td>
-                        Your weekly Spotify Wrapped is here!
+                    <td class="header">
+                        <img class="logo" src="https://storage.googleapis.com/pr-newsroom-wp/1/2018/11/Spotify_Logo_RGB_White.png" alt="Spotify Logo">
+                        <p> Your weekly Spotify Wrapped is here! </p>
                     </td>
                 </tr>
 
